@@ -1,24 +1,25 @@
 import { useState } from 'react'
-import './App.css'
-import { SignInButton, SignedOut, SignOutButton, SignedIn, UserButton } from '@clerk/clerk-react';
+import { SignInButton, SignedOut, SignOutButton, SignedIn, UserButton, useUser } from '@clerk/clerk-react';
+import { Routes, Route, Navigate } from 'react-router';
+import HomePage from "./pages/HomePage";
+import ProblemsPage from './pages/ProblemsPage';
+import { Toaster } from "react-hot-toast";
 
 function App() {
-  const [count, setCount] = useState(0)
+  
+  const {isSignedIn} = useUser()
 
   return (
     <>
-      <h1>Welcome to the app</h1>
-      <SignedOut>
-        <SignInButton mode="modal">
-          <button>Login</button>
-        </SignInButton>
-      </SignedOut>
+      <Routes>      
+        <Route path="/" element= {<HomePage />} />
 
-      <SignedIn>
-        <SignOutButton />
-      </SignedIn>
+        <Route path="/problems" element={isSignedIn ? <ProblemsPage /> : <Navigate to={"/"}/> } />
+        {/* <Route path="/problem/:id" element={  <ProblemPage /> } />
+        <Route path="/session/:id" element={  <SessionPage />} /> */}
+      </Routes>
 
-      <UserButton />
+      <Toaster toastOptions={{duration:3000}}/>
     </>
   )
 }
