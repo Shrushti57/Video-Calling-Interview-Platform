@@ -8,6 +8,7 @@ import {clerkMiddleware} from "@clerk/express";
 import { inngest, functions } from "./lib/inngest.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import sessionRoutes from "./routes/sessionRoutes.js"
+import executeRoutes from "./routes/executeRoutes.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(clerkMiddleware());
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/chat", chatRoutes);
 app.use("/api/sessions", sessionRoutes);
+app.use("/api", executeRoutes);
 
 app.get("/health", (req, res) => {
     res.status(200).json({msg:"success from health"})
