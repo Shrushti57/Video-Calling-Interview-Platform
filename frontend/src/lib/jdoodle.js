@@ -1,38 +1,34 @@
-const BACKEND_URL = "http://localhost:3000/api";
+import axiosInstance from "../lib/axios.js";
 
 export async function executeCode(language, code) {
   try {
-    const response = await fetch(`${BACKEND_URL}/execute`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        language,
-        code,
-      }),
+    const response = await axiosInstance.post("/execute", {
+      language,
+      code,
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || `HTTP error: ${response.status}`,
-      };
-    }
+    const data = response.data;
 
     return {
-      success: true,
+      success: data.success,
       output: data.output || "No output",
+      error: data.error,
       memory: data.memory,
       cpuTime: data.cpuTime,
     };
 
   } catch (error) {
+    console.error(
+      "JDoodle execution error:",
+      error.response?.data || error.message
+    );
+
     return {
       success: false,
-      error: error.message,
+      error:
+        error.response?.data?.error ||
+        error.message ||
+        "Code execution failed",
     };
   }
 }
